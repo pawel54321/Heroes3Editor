@@ -118,6 +118,21 @@ namespace Heroes3Editor.Models
         public bool IsHOTAGame => _game.IsHOTA;
         public int BytePosition { get; }
 
+        public int Experience { get; set; }
+
+        public int CoordinatesXMarker { get; set; }
+        public int CoordinatesYMarker { get; set; }
+        public int CurrentMovementPoints { get; set; }
+        public int MaxMovementPoints { get; set; }
+
+        public byte HeroLevel { get; set; }
+
+        public short ManaPoints { get; set; }
+
+        public short CoordinatesX { get; set; }
+        public short CoordinatesY { get; set; }
+        public byte CoordinatesZ { get; set; }
+
         public byte[] Attributes { get; } = new byte[4];
         public int NumOfSkills { get; private set; }
         public string[] Skills { get; } = new string[8];
@@ -157,6 +172,58 @@ namespace Heroes3Editor.Models
             Name = name;
             _game = game;
             BytePosition = bytePosition;
+
+            byte[] bytesExperience = new byte[4];
+            for (int i = 0; i < 4; ++i)
+                bytesExperience[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["Experience"] + i];
+
+            Experience = BinaryPrimitives.ReadInt32LittleEndian(bytesExperience);
+
+            byte[] bytesCoordinatesXMarker = new byte[4];
+            for (int i = 0; i < 4; ++i)
+                bytesCoordinatesXMarker[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["CoordinatesXMarker"] + i];
+
+            CoordinatesXMarker = BinaryPrimitives.ReadInt32LittleEndian(bytesCoordinatesXMarker);
+
+            byte[] bytesCoordinatesYMarker = new byte[4];
+            for (int i = 0; i < 4; ++i)
+                bytesCoordinatesYMarker[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["CoordinatesYMarker"] + i];
+
+            CoordinatesYMarker = BinaryPrimitives.ReadInt32LittleEndian(bytesCoordinatesYMarker);
+
+            byte[] bytesCurrentMovementPoints = new byte[4];
+            for (int i = 0; i < 4; ++i)
+                bytesCurrentMovementPoints[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["CurrentMovementPoints"] + i];
+
+            CurrentMovementPoints = BinaryPrimitives.ReadInt32LittleEndian(bytesCurrentMovementPoints);
+
+            byte[] bytesMaxMovementPoints = new byte[4];
+            for (int i = 0; i < 4; ++i)
+                bytesMaxMovementPoints[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["MaxMovementPoints"] + i];
+
+            MaxMovementPoints = BinaryPrimitives.ReadInt32LittleEndian(bytesMaxMovementPoints);
+
+            HeroLevel = _game.Bytes[BytePosition + Constants.HeroOffsets["HeroLevel"]];
+
+            byte[] bytesManaPoints = new byte[2];
+            for (int i = 0; i < 2; ++i)
+                bytesManaPoints[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["ManaPoints"] + i];
+
+            ManaPoints = BinaryPrimitives.ReadInt16LittleEndian(bytesManaPoints);
+
+            byte[] bytesCoordinatesX = new byte[2];
+            for (int i = 0; i < 2; ++i)
+                bytesCoordinatesX[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["CoordinatesX"] + i];
+
+            CoordinatesX = BinaryPrimitives.ReadInt16LittleEndian(bytesCoordinatesX);
+
+            byte[] bytesCoordinatesY = new byte[2];
+            for (int i = 0; i < 2; ++i)
+                bytesCoordinatesY[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["CoordinatesY"] + i];
+
+            CoordinatesY = BinaryPrimitives.ReadInt16LittleEndian(bytesCoordinatesY);
+
+            CoordinatesZ = _game.Bytes[BytePosition + Constants.HeroOffsets["CoordinatesZ"]];
 
             for (int i = 0; i < 4; ++i)
                 Attributes[i] = _game.Bytes[BytePosition + Constants.HeroOffsets["Attributes"] + i];
@@ -206,6 +273,84 @@ namespace Heroes3Editor.Models
                 if (code != OFF)
                     EquippedArtifacts[gear] = Constants.Artifacts[code];
             }
+        }
+
+        public void UpdateExperience(int i, int value)
+        {
+            Experience = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["Experience"], i);
+            BinaryPrimitives.WriteInt32LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateCoordinatesXMarker(int i, int value)
+        {
+            CoordinatesXMarker = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["CoordinatesXMarker"], i);
+            BinaryPrimitives.WriteInt32LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateCoordinatesYMarker(int i, int value)
+        {
+            CoordinatesYMarker = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["CoordinatesYMarker"], i);
+            BinaryPrimitives.WriteInt32LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateCurrentMovementPoints(int i, int value)
+        {
+            CurrentMovementPoints = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["CurrentMovementPoints"], i);
+            BinaryPrimitives.WriteInt32LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateMaxMovementPoints(int i, int value)
+        {
+            MaxMovementPoints = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["MaxMovementPoints"], i);
+            BinaryPrimitives.WriteInt32LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateHeroLevel(byte value)
+        {
+            HeroLevel = value;
+
+            _game.Bytes[BytePosition + Constants.HeroOffsets["HeroLevel"]] = value;
+        }
+
+        public void UpdateManaPoints(int i, short value)
+        {
+            ManaPoints = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["ManaPoints"], i);
+            BinaryPrimitives.WriteInt16LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateCoordinatesX(int i, short value)
+        {
+            CoordinatesX = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["CoordinatesX"], i);
+            BinaryPrimitives.WriteInt16LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateCoordinatesY(int i, short value)
+        {
+            CoordinatesY = value;
+
+            var amountBytes = _game.Bytes.AsSpan().Slice(BytePosition + Constants.HeroOffsets["CoordinatesY"], i);
+            BinaryPrimitives.WriteInt16LittleEndian(amountBytes, value);
+        }
+
+        public void UpdateCoordinatesZ(byte value)
+        {
+            CoordinatesZ = value;
+
+            _game.Bytes[BytePosition + Constants.HeroOffsets["CoordinatesZ"]] = value;
         }
 
         public void UpdateAttribute(int i, byte value)
@@ -319,7 +464,7 @@ namespace Heroes3Editor.Models
         public void UpdateEquippedArtifact(string gear, string artifact)
         {
             int currentBytePos = BytePosition + Constants.HeroOffsets[gear];
-            if (!artifact.Contains("None"))
+            if (!artifact.Contains("Brak"))
             {
                 EquippedArtifacts[gear] = artifact;
                 _game.Bytes[currentBytePos] = Constants.Artifacts[artifact];
@@ -341,7 +486,7 @@ namespace Heroes3Editor.Models
         //   0  |   1  |   2   |  3  |    4    |   5  |  6 |  7
         public string[] UpdateArtifactInfo(string artifact)
         {
-            if (null != artifact && !"None".Equals(artifact))
+            if (null != artifact && !"Brak".Equals(artifact))
             {
                 return Constants.ArtifactInfo[Constants.Artifacts[artifact]].Split("|");
             }

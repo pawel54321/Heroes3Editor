@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Heroes3Editor.Models
 {
@@ -40,12 +42,27 @@ namespace Heroes3Editor.Models
             "Erdamon", "Fiur", "Ignissa", "Kalt", "Lacus", "Monere", "Pasis", "Thunar", "Aenain", "Brissa", "Ciele",
             "Gelare", "Grindan", "Inteus", "Labetha", "Luna", "Gen. Kendal", "Anabel","Cassiopeia","Corkes","Derek",
             "Elmore","Illor","Leena","Miriam","Andal","Astra","Dargem","Eovacius","Manfred","Zilare",
-            "Jeremy","Bidley","Spint", "Casmetra","Tark"
+            "Jeremy", "Bidley", "Spint", "Casmetra", "Tark",
+            "Henrietta", "Sam", "Tancred", "Melchior", "Floribert", "Wynona", "Dury", "Morton", "Celestine",
+            "Todd", "Agar", "Bertram", "Wrathmont", "Ziph", "Victoria", "Eanswythe",
+            "Tavin", "Murdoch", "Frederick", "Boyd",
+            "Tarnum", "Giselle"
         };
         public static string[] Heroes { get; } = _heroes.OrderBy(x => x).ToArray();
 
         public static Dictionary<string, int> HeroOffsets = new Dictionary<string, int>()
         {
+
+            {"Experience", -130},
+            {"CoordinatesXMarker", -150 },
+            {"CoordinatesYMarker", -146 },
+            {"CurrentMovementPoints", -134 },
+            {"MaxMovementPoints", -138 },
+            {"HeroLevel", -120},
+            {"ManaPoints", -122},
+            {"CoordinatesX", -195},
+            {"CoordinatesY", -193},
+            {"CoordinatesZ", -191},
             {"Attributes", 69}, // Primary Skills
             {"Weapon", 237},
             {"Shield", 245},
@@ -124,34 +141,36 @@ namespace Heroes3Editor.Models
     {
         private static readonly Dictionary<int, string> _namesByCode = new Dictionary<int, string>()
         {
-            {0, "Pathfinding"},
-            {1, "Archery"},
-            {2, "Logistics"},
-            {3, "Scouting"},
-            {4, "Diplomacy"},
-            {5, "Navigation"},
-            {6, "Leadership"},
-            {7, "Wisdom"},
-            {8, "Mysticism"},
-            {9, "Luck"},
-            {10, "Ballistics"},
-            {11, "Eagle Eye"},
-            {12, "Necromancy"},
-            {13, "Estates"},
-            {14, "Fire Magic"},
-            {15, "Air Magic"},
-            {16, "Water Magic"},
-            {17, "Earth Magic"},
-            {18, "Scholar"},
-            {19, "Tactics"},
-            {20, "Artillery"},
-            {21, "Learning"},
-            {22, "Offense"},
-            {23, "Armorer"},
-            {24, "Intelligence"},
-            {25, "Sorcery"},
-            {26, "Resistance"},
-            {27, "First Aid"}
+            {0, "Znajdowanie drogi"}, //Pathfinding
+            {1, "Łucznictwo"}, //Archery
+            {2, "Logistyka"}, //Logistics
+            {3, "Odkrywanie"}, //Scouting
+            {4, "Dyplomacja"}, //Diplomacy
+            {5, "Nawigacja"}, //Navigation
+            {6, "Dowodzenie"}, //Leadership
+            {7, "Mądrość"}, //Wisdom
+            {8, "Mistycyzm"}, //Mysticism
+            {9, "Szczęście"}, //Luck
+            {10, "Balistyka"}, //Ballistics
+            {11, "Sokoli wzrok"}, //Eagle Eye
+            {12, "Nekromancja"}, //Necromancy
+            {13, "Finanse"}, //Estates
+            {14, "Magia ognia"}, //Fire Magic
+            {15, "Magia powietrza"}, //Air Magic
+            {16, "Magia wody"}, //Water Magic
+            {17, "Magia ziemi"}, //Earth Magic
+            {18, "Nauka czarów"}, //Scholar
+            {19, "Taktyka"}, //Tactics
+            {20, "Artyleria"}, //Artillery
+            {21, "Nauka"}, //Learning
+            {22, "Atak"}, //Offense
+            {23, "Płatnerstwo"}, //Armorer
+            {24, "Inteligencja"}, //Intelligence
+            {25, "Talent magiczny"}, //Sorcery
+            {26, "Odporność"}, //Resistance
+            {27, "Pierwsza pomoc"}//, //First Aid
+            //{28, "Zakłócanie"}
+            //TODO
         };
 
         private static readonly Dictionary<string, int> _codesByName = _namesByCode.ToDictionary(i => i.Value, i => i.Key);
@@ -169,7 +188,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<byte, string>()
             {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x07, "Centaur's Axe" },
                 {0x08, "Blackshard of the Dead Knight" },
                 {0x09, "Greater Knoll's Flail" },
@@ -194,7 +213,7 @@ namespace Heroes3Editor.Models
         public Shields()
         {
             _namesByCode = new Dictionary<byte, string>() {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x0D, "Shield of the Dwarven Lords" },
                 {0x0E, "Shield of the Yawning Dead" },
                 {0x0F, "Buckler of the Gnoll King" },
@@ -216,7 +235,7 @@ namespace Heroes3Editor.Models
         public Helms()
         {
             _namesByCode = new Dictionary<byte, string>() {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x13, "Helm of the Alabaster Unicorn" },
                 {0x14, "Skull Helmet" },
                 {0x15, "Helm of Chaos" },
@@ -241,7 +260,7 @@ namespace Heroes3Editor.Models
         public Armor()
         {
             _namesByCode = new Dictionary<byte, string>() {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x19, "Breastplate of Petrified Wood" },
                 {0x1A, "Rib Cage" },
                 {0x1B, "Scales of the Greater Basilisk" },
@@ -267,7 +286,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<byte, string>()
             {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x2A, "Dragon Wing Tabard" },
                 {0x37, "Vampire's Cowl" },
                 {0x44, "Ambassador's Sash" },
@@ -285,13 +304,19 @@ namespace Heroes3Editor.Models
         }
     }
 
+    public class CombinationsArtifacts : BaseArtifact
+    {
+        //TODO
+    }
+
     public class Boots : BaseArtifact
     {
         public Boots()
         {
+
             _namesByCode = new Dictionary<byte, string>()
             {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x20, "Sandal's of the Saint" },
                 {0x29, "Dragonbone Greaves" },
                 {0x38, "Dead Men's Boots" },
@@ -310,7 +335,7 @@ namespace Heroes3Editor.Models
         public Neck()
         {
             _namesByCode = new Dictionary<byte, string>() {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x21, "Celestial Necklace of Bliss" },
                 {0x2B, "Necklace of Dragonteeth" },
                 {0x36, "Amulet of the Undertaker" },
@@ -341,7 +366,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<byte, string>()
             {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x25, "Quiet Eye of the Dragon" },
                 {0x2D, "Still Eye of the Dragon" },
                 {0x43, "Diplomat Ring" },
@@ -367,7 +392,7 @@ namespace Heroes3Editor.Models
         public Items()
         {
             _namesByCode = new Dictionary<byte, string>() {
-                {0xFF, "None" },
+                {0xFF, "Brak" },
                 {0x2E, "Clover of Fortune" },
                 {0x2F, "Cards of Prophecy" },
                 {0x30, "Ladybird of Luck" },
@@ -453,6 +478,7 @@ namespace Heroes3Editor.Models
                 {0x00, "Spell Book" },
                 {0x01, "Spell Scroll" },
                 {0x02, "The Grail" },
+                //TODO
             };
         }
         public void AddArtifacts(Dictionary<byte, string> artifacts)
@@ -887,7 +913,23 @@ namespace Heroes3Editor.Models
                 {167, "Satyrs"},
                 {168, "Fangarms"},
                 {169, "Leprechauns"},
-                {170, "Steel golems"}
+                {170, "Steel golems"},
+
+                {171, "Niziołki grenadierzy"}, //"Halfling Grenadier"
+                {172, "Mechanicy"}, //"Mechanic"
+                {173, "Inżynierzy"}, //"Engineer"
+                {174, "Pancerniki"}, //"Armadillo"
+                {175, "Pancerniki alfa"}, //"Bellwether Armadillo"
+                {176, "Automatony"}, //"Automaton"
+                {177, "Automatony strażnicze"}, //"Sentinel Automaton"
+                {178, "Czerwie pustynne"}, //"Sandworm"
+                {179, "Czerwie śmierci"}, //"Olgoi-Khorkhoi"
+                {180, "Najemnicy"}, //"Gunslinger"
+                {181, "Łowcy nagród"}, //"Bounty Hunter"
+                {182, "Koatle"}, //"Couatl"
+                {183, "Karmazynowe koatle"}, //"Crimson Couatl"
+                {184, "Drednoty"}, //"Dreadnought"
+                {185, "Molochy"} //"Juggernaut"
             };
         }
     }

@@ -19,7 +19,7 @@
     </Window.CommandBindings>
     <DockPanel LastChildFill="False">
         <Menu x:Name="menu" DockPanel.Dock="Top">
-            <MenuItem Header="_File">
+            <MenuItem Header="_Plik">
                 <MenuItem Command="ApplicationCommands.Open">
                     <MenuItem.Icon>
                         <Image Source="/Resources/VS2019/OpenFile_16x.png"/>
@@ -31,7 +31,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="E_xit" Click="Exit">
+                <MenuItem Header="W_yjście" Click="Exit">
                     <MenuItem.Icon>
                         <Image Source="/Resources/VS2019/Exit_16x.png"/>
                     </MenuItem.Icon>
@@ -51,6 +51,7 @@
             <Button Name="heroSearchBtn" IsEnabled="False" Click="SearchHero">
                 <Image Source="/Resources/VS2019/Search_16x.png" Width="16" Height="16"></Image>
             </Button>
+            <Separator></Separator>
         </ToolBar>
         <DockPanel DockPanel.Dock="Top">
             <TabControl Name="heroTabs" Margin="5,5,5,5">

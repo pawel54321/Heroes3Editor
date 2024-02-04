@@ -11,7 +11,7 @@ namespace Heroes3Editor.Models
 
         internal Dictionary<string, byte> _codesByName => _namesByCode?.ToDictionary(i => i.Value, i => i.Key);
 
-        public Dictionary<byte, string> GetArtifacts => _namesByCode.Where(x => x.Value != "None").ToDictionary(x => x.Key, x => x.Value);
+        public Dictionary<byte, string> GetArtifacts => _namesByCode.Where(x => x.Value != "Brak").ToDictionary(x => x.Key, x => x.Value);
 
         public BaseArtifact()
         {

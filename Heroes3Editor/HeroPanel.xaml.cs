@@ -26,6 +26,54 @@ namespace Heroes3Editor
                 {
                     SetClassicSettings();
                 }
+
+                var txtBoxExperience = FindName("Experience") as TextBox;
+                txtBoxExperience.Text = _hero.Experience.ToString();            
+
+                var txtBoxCoordinatesXMarker = FindName("CoordinatesXMarker") as TextBox;
+                var txtBoxCoordinatesYMarker = FindName("CoordinatesYMarker") as TextBox;
+                
+                //if (_hero.CoordinatesXMarker == -1 && _hero.CoordinatesYMarker == -1) //marker without coordinates
+                //{
+                //    txtBoxCoordinatesXMarker.IsEnabled = false;
+                //    txtBoxCoordinatesYMarker.IsEnabled = false;
+                //}
+                //else
+                //{
+                    txtBoxCoordinatesXMarker.Text = _hero.CoordinatesXMarker.ToString();
+                    txtBoxCoordinatesYMarker.Text = _hero.CoordinatesYMarker.ToString();
+                //}
+
+                var txtBoxCurrentMovementPoints = FindName("CurrentMovementPoints") as TextBox;
+                txtBoxCurrentMovementPoints.Text = _hero.CurrentMovementPoints.ToString();
+
+                var txtBoxMaxMovementPoints = FindName("MaxMovementPoints") as TextBox;
+                txtBoxMaxMovementPoints.Text = _hero.MaxMovementPoints.ToString();
+
+
+                var txtBoxHeroLevel = FindName("HeroLevel") as TextBox;
+                txtBoxHeroLevel.Text = _hero.HeroLevel.ToString();
+
+                var txtBoxManaPoints = FindName("ManaPoints") as TextBox;
+                txtBoxManaPoints.Text = _hero.ManaPoints.ToString();
+
+                var txtBoxCoordinatesX = FindName("CoordinatesX") as TextBox;         
+                var txtBoxCoordinatesY = FindName("CoordinatesY") as TextBox;                            
+                var txtBoxCoordinatesZ = FindName("CoordinatesZ") as TextBox;            
+
+                if(_hero.CoordinatesX == -1 && _hero.CoordinatesY == -1 && _hero.CoordinatesZ == 255) //hero without coordinates
+                {
+                    txtBoxCoordinatesX.IsEnabled = false;
+                    txtBoxCoordinatesY.IsEnabled = false;
+                    txtBoxCoordinatesZ.IsEnabled = false;
+                }
+                else
+                {
+                    txtBoxCoordinatesX.Text = _hero.CoordinatesX.ToString();
+                    txtBoxCoordinatesY.Text = _hero.CoordinatesY.ToString();
+                    txtBoxCoordinatesZ.Text = _hero.CoordinatesZ.ToString();
+                }
+
                 for (int i = 0; i < 4; ++i)
                 {
                     var txtBox = FindName("Attribute" + i) as TextBox;
@@ -115,6 +163,114 @@ namespace Heroes3Editor
                 component.Visibility = visibility;
             }
         }
+        private void UpdateExperience(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            int value;
+            bool isNumber = int.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 2147483647) return;
+
+            _hero.UpdateExperience(4, value);
+        }
+
+        private void UpdateCoordinatesXMarker(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            int value;
+            bool isNumber = int.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < -1 || value > 2147483647) return;
+
+            _hero.UpdateCoordinatesXMarker(4, value);
+        }
+
+        private void UpdateCoordinatesYMarker(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            int value;
+            bool isNumber = int.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < -1 || value > 2147483647) return;
+
+            _hero.UpdateCoordinatesYMarker(4, value);
+        }
+
+        private void UpdateCurrentMovementPoints(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            int value;
+            bool isNumber = int.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 1000000) return;
+
+            _hero.UpdateCurrentMovementPoints(4, value);
+        }
+
+        private void UpdateMaxMovementPoints(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            int value;
+            bool isNumber = int.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 1000000) return;
+
+            _hero.UpdateMaxMovementPoints(4, value);
+        }
+
+        private void UpdateHeroLevel(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            byte value;
+            bool isNumber = byte.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 255) return;
+
+            _hero.UpdateHeroLevel(value);
+        }
+
+        private void UpdateManaPoints(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            short value;
+            bool isNumber = short.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 9999) return;
+
+            _hero.UpdateManaPoints(2, value);
+        }
+
+        private void UpdateCoordinatesX(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            short value;
+            bool isNumber = short.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 32767) return;
+
+            _hero.UpdateCoordinatesX(2, value);
+        }
+        private void UpdateCoordinatesY(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            short value;
+            bool isNumber = short.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 32767) return;
+
+            _hero.UpdateCoordinatesY(2, value);
+        }
+        private void UpdateCoordinatesZ(object sender, RoutedEventArgs e)
+        {
+            var txtBox = e.Source as TextBox;
+
+            byte value;
+            bool isNumber = byte.TryParse(txtBox.Text, out value);
+            if (!isNumber || value < 0 || value > 1) return;
+
+            _hero.UpdateCoordinatesZ(value);
+        }
+
         private void UpdateAttribute(object sender, RoutedEventArgs e)
         {
             var txtBox = e.Source as TextBox;
