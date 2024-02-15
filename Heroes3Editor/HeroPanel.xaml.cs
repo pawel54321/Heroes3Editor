@@ -28,11 +28,11 @@ namespace Heroes3Editor
                 }
 
                 var txtBoxExperience = FindName("Experience") as TextBox;
-                txtBoxExperience.Text = _hero.Experience.ToString();            
+                txtBoxExperience.Text = _hero.Experience.ToString();
 
                 var txtBoxCoordinatesXMarker = FindName("CoordinatesXMarker") as TextBox;
                 var txtBoxCoordinatesYMarker = FindName("CoordinatesYMarker") as TextBox;
-                
+
                 //if (_hero.CoordinatesXMarker == -1 && _hero.CoordinatesYMarker == -1) //marker without coordinates
                 //{
                 //    txtBoxCoordinatesXMarker.IsEnabled = false;
@@ -40,8 +40,8 @@ namespace Heroes3Editor
                 //}
                 //else
                 //{
-                    txtBoxCoordinatesXMarker.Text = _hero.CoordinatesXMarker.ToString();
-                    txtBoxCoordinatesYMarker.Text = _hero.CoordinatesYMarker.ToString();
+                txtBoxCoordinatesXMarker.Text = _hero.CoordinatesXMarker.ToString();
+                txtBoxCoordinatesYMarker.Text = _hero.CoordinatesYMarker.ToString();
                 //}
 
                 var txtBoxCurrentMovementPoints = FindName("CurrentMovementPoints") as TextBox;
@@ -57,11 +57,11 @@ namespace Heroes3Editor
                 var txtBoxManaPoints = FindName("ManaPoints") as TextBox;
                 txtBoxManaPoints.Text = _hero.ManaPoints.ToString();
 
-                var txtBoxCoordinatesX = FindName("CoordinatesX") as TextBox;         
-                var txtBoxCoordinatesY = FindName("CoordinatesY") as TextBox;                            
-                var txtBoxCoordinatesZ = FindName("CoordinatesZ") as TextBox;            
+                var txtBoxCoordinatesX = FindName("CoordinatesX") as TextBox;
+                var txtBoxCoordinatesY = FindName("CoordinatesY") as TextBox;
+                var txtBoxCoordinatesZ = FindName("CoordinatesZ") as TextBox;
 
-                if(_hero.CoordinatesX == -1 && _hero.CoordinatesY == -1 && _hero.CoordinatesZ == 255) //hero without coordinates
+                if (_hero.CoordinatesX == -1 && _hero.CoordinatesY == -1 && _hero.CoordinatesZ == 255) //hero without coordinates
                 {
                     txtBoxCoordinatesX.IsEnabled = false;
                     txtBoxCoordinatesY.IsEnabled = false;
@@ -126,6 +126,13 @@ namespace Heroes3Editor
                     var toggleComponent = FindName(warMachine) as ToggleButton;
                     toggleComponent.IsChecked = true;
                 }
+
+                var toggleSpellBook = FindName("SpellBook") as ToggleButton;
+                toggleSpellBook.IsChecked = _hero.SpellBookState;
+
+                var toggleCatapult = FindName("Catapult") as ToggleButton;
+                toggleCatapult.IsChecked = _hero.CatapultState;
+
 
                 var gears = new List<string>(_hero.EquippedArtifacts.Keys);
                 foreach (var gear in gears)
@@ -330,6 +337,26 @@ namespace Heroes3Editor
             _hero.RemoveSpell(chkBox.Name);
         }
 
+        private void AddSpellBook(object sender, RoutedEventArgs e)
+        {
+            _hero.AddSpellBook();
+        }
+
+        private void RemoveSpellBook(object sender, RoutedEventArgs e)
+        {
+            _hero.RemoveSpellBook();
+        }
+
+        private void AddCatapult(object sender, RoutedEventArgs e)
+        {
+            _hero.AddCatapult();
+        }
+
+        private void RemoveCatapult(object sender, RoutedEventArgs e)
+        {
+            _hero.RemoveCatapult();
+        }
+
         private void UpdateCreature(object sender, RoutedEventArgs e)
         {
             var cboBox = e.Source as ComboBox;
@@ -378,6 +405,7 @@ namespace Heroes3Editor
             var cboBox = e.Source as ComboBox;
             var gear = cboBox.Name.Substring("EA_".Length);
             var artifact = cboBox.SelectedItem as string;
+
             _hero.UpdateEquippedArtifact(gear, artifact);
         }
 

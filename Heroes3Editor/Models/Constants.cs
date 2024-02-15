@@ -1,7 +1,6 @@
-﻿using System.CodeDom.Compiler;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 
 namespace Heroes3Editor.Models
 {
@@ -21,6 +20,9 @@ namespace Heroes3Editor.Models
         public static Items Items { get; } = new Items();
         public static WarMachines WarMachines { get; } = new WarMachines();
         public static Artifacts Artifacts { get; } = new Artifacts();
+        public static Scrolls Scrolls { get; } = new Scrolls();
+
+        public static CustomArtifacts CustomArtifacts { get; } = new CustomArtifacts();
 
         public static ArtifactInfo ArtifactInfo { get; } = new ArtifactInfo();
 
@@ -53,6 +55,8 @@ namespace Heroes3Editor.Models
         public static Dictionary<string, int> HeroOffsets = new Dictionary<string, int>()
         {
 
+            {"Catapult_Slot", 341},
+            {"SpellBook_Slot", 349},
             {"Experience", -130},
             {"CoordinatesXMarker", -150 },
             {"CoordinatesYMarker", -146 },
@@ -86,10 +90,10 @@ namespace Heroes3Editor.Models
             {"Skills", 13}, // Secondary Skills
             {"SkillSlots", 41},
             {"Spells", 73},
-            {"SpellBook", 143},
+            {"SpellBook", 143}, // (???)
             {"Creatures", -56},
             {"CreatureAmounts", -28},
-            {"Inventory", 365 }
+            {"Inventory", 365 } //64
         };
 
         public static void LoadHOTAItems()
@@ -105,6 +109,8 @@ namespace Heroes3Editor.Models
             Neck.LoadHotaReferenceCodes();
             Items.LoadHotaReferenceCodes();
             Creatures.LoadHotaReferenceCodes();
+            Scrolls.LoadHotaReferenceCodes();
+            CustomArtifacts.LoadHotaReferenceCodes();
         }
 
         public static void RemoveHOTAReferenceCodes()
@@ -120,6 +126,8 @@ namespace Heroes3Editor.Models
             Neck.RemoveHotaReferenceCodes();
             Items.RemoveHotaReferenceCodes();
             Creatures.RemoveHotaReferenceCodes();
+            Scrolls.RemoveHotaReferenceCodes();
+            CustomArtifacts.RemoveHotaReferenceCodes();
         }
 
         public static void LoadAllArtifacts()
@@ -133,6 +141,9 @@ namespace Heroes3Editor.Models
             Artifacts.AddArtifacts(Rings.GetArtifacts);
             Artifacts.AddArtifacts(Boots.GetArtifacts);
             Artifacts.AddArtifacts(Neck.GetArtifacts);
+
+            Items.AddArtifacts(Scrolls.GetArtifacts); //Item: 1-5
+
             Artifacts.AddArtifacts(Items.GetArtifacts);
         }
     }
@@ -186,8 +197,9 @@ namespace Heroes3Editor.Models
     {
         public Weapons()
         {
-            _namesByCode = new Dictionary<byte, string>()
+            _namesByCode = new Dictionary<short, string>()
             {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x07, "Centaur's Axe" },
                 {0x08, "Blackshard of the Dead Knight" },
@@ -198,10 +210,10 @@ namespace Heroes3Editor.Models
                 {0x23, "Sword of Judgement" },
                 {0x26, "Red Dragon Flame Tongue" },
                 {0x80, "Armageddon's Blade" },
-                {0x81, "Angelic Alliance" },
+                {0x81, "Miecz Anielskiego Sojuszu" }, //combination
                 {0x87, "Titans Thunder" }
             };
-            _HOTANamesByCode = new Dictionary<byte, string>()
+            _HOTANamesByCode = new Dictionary<short, string>()
             {
                 {0x8F, "Ironfist of the Ogre" },
             };
@@ -212,7 +224,8 @@ namespace Heroes3Editor.Models
     {
         public Shields()
         {
-            _namesByCode = new Dictionary<byte, string>() {
+            _namesByCode = new Dictionary<short, string>() {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x0D, "Shield of the Dwarven Lords" },
                 {0x0E, "Shield of the Yawning Dead" },
@@ -221,9 +234,9 @@ namespace Heroes3Editor.Models
                 {0x11, "Shield of the Damned" },
                 {0x12, "Sentinel's Shield" },
                 {0x22, "Lion's Shield of Courage" },
-                {0x27, "Dragon Scale Shield" }
+                {0x27, "Dragon Scale Shield" },
             };
-            _HOTANamesByCode = new Dictionary<byte, string>()
+            _HOTANamesByCode = new Dictionary<short, string>()
             {
                 {148, "Shield of Naval Glory"},
             };
@@ -234,7 +247,8 @@ namespace Heroes3Editor.Models
     {
         public Helms()
         {
-            _namesByCode = new Dictionary<byte, string>() {
+            _namesByCode = new Dictionary<short, string>() {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x13, "Helm of the Alabaster Unicorn" },
                 {0x14, "Skull Helmet" },
@@ -246,9 +260,9 @@ namespace Heroes3Editor.Models
                 {0x2C, "Crown of Dragontooth" },
                 {0x7B, "Sea Captain's Hat" },
                 {0x7C, "Spellbinder's Hat" },
-                {0x88, "Admiral's Hat" }
+                {0x88, "Kapelusz Admirała" } //combination
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {150, "Crown of the Five Seas"},
                 {155, "Hideous Mask"},
             };
@@ -259,7 +273,7 @@ namespace Heroes3Editor.Models
     {
         public Armor()
         {
-            _namesByCode = new Dictionary<byte, string>() {
+            _namesByCode = new Dictionary<short, string>() {
                 {0xFF, "Brak" },
                 {0x19, "Breastplate of Petrified Wood" },
                 {0x1A, "Rib Cage" },
@@ -270,10 +284,10 @@ namespace Heroes3Editor.Models
                 {0x1F, "Armor of Wonder" },
                 {0x28, "Dragon Scale Armor" },
                 {0x3A, "Surcoat of Counterpoise" },
-                {0x84, "Armor of the Dammed" },
+                {0x84, "Zbroja Przeklętego" }, //combination
                 {0x86, "Power of the Dragon Father" }
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {149, "Royal Armor of Nix"},
                 {164, "Plate of Dying Light"}
             };
@@ -284,8 +298,9 @@ namespace Heroes3Editor.Models
     {
         public Cloak()
         {
-            _namesByCode = new Dictionary<byte, string>()
+            _namesByCode = new Dictionary<short, string>()
             {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x2A, "Dragon Wing Tabard" },
                 {0x37, "Vampire's Cowl" },
@@ -296,17 +311,12 @@ namespace Heroes3Editor.Models
                 {0x63, "Cape of Velocity" },
                 {0x6D, "Everflowing Crystal Cloak" },
                 {0x82, "Cloak of Undead King" },
+            };
+            _HOTANamesByCode = new Dictionary<short, string>() {
+                {159, "Cape of Silence"},
                 {0x8D, "Diplomat's Cloak" },
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
-                {159, "Cape of Silence"},
-            };
         }
-    }
-
-    public class CombinationsArtifacts : BaseArtifact
-    {
-        //TODO
     }
 
     public class Boots : BaseArtifact
@@ -314,8 +324,9 @@ namespace Heroes3Editor.Models
         public Boots()
         {
 
-            _namesByCode = new Dictionary<byte, string>()
+            _namesByCode = new Dictionary<short, string>()
             {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x20, "Sandal's of the Saint" },
                 {0x29, "Dragonbone Greaves" },
@@ -324,7 +335,7 @@ namespace Heroes3Editor.Models
                 {0x5A, "Boots of Levitation" },
                 {0x62, "Boots of Speed" }
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {0x97, "Wayfarer's Boots"},
             };
         }
@@ -334,7 +345,9 @@ namespace Heroes3Editor.Models
     {
         public Neck()
         {
-            _namesByCode = new Dictionary<byte, string>() {
+            _namesByCode = new Dictionary<short, string>() {
+
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x21, "Celestial Necklace of Bliss" },
                 {0x2B, "Necklace of Dragonteeth" },
@@ -353,7 +366,7 @@ namespace Heroes3Editor.Models
                 {0x6B, "Pendant of Total Recall" },
                 {0x6C, "Pendant of Courage" }
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {0x8E, "Pendant of Reflection" },
                 {157, "Pendant of Downfall"},
             };
@@ -364,8 +377,9 @@ namespace Heroes3Editor.Models
     {
         public Rings()
         {
-            _namesByCode = new Dictionary<byte, string>()
+            _namesByCode = new Dictionary<short, string>()
             {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x25, "Quiet Eye of the Dragon" },
                 {0x2D, "Still Eye of the Dragon" },
@@ -379,7 +393,7 @@ namespace Heroes3Editor.Models
                 {0x71, "Eversmoking Ring of Sulfur" },
                 {0x8B, "Ring of the Magi" },
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {156, "Ring of Suppression"},
                 {158, "Ring of Oblivion"},
                 {163, "Seal of Sunset"},
@@ -389,9 +403,10 @@ namespace Heroes3Editor.Models
 
     public class Items : BaseArtifact
     {
-        public Items()
+        public Items() //1-5
         {
-            _namesByCode = new Dictionary<byte, string>() {
+            _namesByCode = new Dictionary<short, string>() {
+                {0x91, "Blokada" },
                 {0xFF, "Brak" },
                 {0x2E, "Clover of Fortune" },
                 {0x2F, "Cards of Prophecy" },
@@ -440,12 +455,12 @@ namespace Heroes3Editor.Models
                 {0x7E, "Orb of Inhibition" },
                 {0x83, "Elixir of Life" },
                 {0x85, "Statue of Legion" },
-                {0x89, "Bow of the Sharpshooter" },
+                {0x89, "Łuk Strzelca" }, //combination
                 {0x8A, "Wizard's Well" },
                 {0x8C, "Cornucopia" },
 
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {153, "Demon's Horseshoe"},
                 {154, "Shaman's Puppet"},
                 {160, "Golden Goose"},
@@ -453,35 +468,8 @@ namespace Heroes3Editor.Models
                 {162, "Charm of Eclipse"},
             };
         }
-    }
 
-    public class WarMachines : BaseArtifact
-    {
-        public WarMachines()
-        {
-            _namesByCode = new Dictionary<byte, string>() {
-                {0x04, "Ballista" },
-                {0x05, "Ammo_Cart" },
-                {0x06, "First_Aid_Tent" }
-            };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
-                {0x92, "Canon" }
-            };
-        }
-    }
-
-    public class Artifacts : BaseArtifact
-    {
-        public Artifacts()
-        {
-            _namesByCode = new Dictionary<byte, string>() {
-                {0x00, "Spell Book" },
-                {0x01, "Spell Scroll" },
-                {0x02, "The Grail" },
-                //TODO
-            };
-        }
-        public void AddArtifacts(Dictionary<byte, string> artifacts)
+        public void AddArtifacts(Dictionary<short, string> artifacts)
         {
             foreach (var element in artifacts)
             {
@@ -494,11 +482,149 @@ namespace Heroes3Editor.Models
         }
     }
 
+    public class WarMachines : BaseArtifact
+    {
+        public WarMachines()
+        {
+            _namesByCode = new Dictionary<short, string>() {
+                {0x04, "Ballista" },
+                {0x05, "Ammo_Cart" },
+                {0x06, "First_Aid_Tent" }
+            };
+            _HOTANamesByCode = new Dictionary<short, string>() {
+                {0x92, "Canon" }
+            };
+        }
+    }
+
+    public class CustomArtifacts : BaseArtifact //CustomInventory (Sakwa)
+    {
+        public CustomArtifacts()
+        {
+            _namesByCode = new Dictionary<short, string>() {
+                {0x00, "Spell Book" },
+                {0x01, "Spell Scroll" },
+                {0x03, "Catapult" },
+            };
+        }
+
+    }
+
+    public class Artifacts : BaseArtifact //Inventory (Sakwa)
+    {
+        public Artifacts()
+        {
+            _namesByCode = new Dictionary<short, string>() {
+                {0x02, "The Grail" }, //TODO: Only in long slot
+            };
+        }
+        public void AddArtifacts(Dictionary<short, string> artifacts)
+        {
+            foreach (var element in artifacts)
+            {
+                if (_namesByCode.ContainsKey(element.Key))
+                {
+                    continue;
+                }
+                _namesByCode.Add(element.Key, element.Value);
+            }
+        }
+    }
+
+    public class Scrolls : BaseArtifact
+    {
+        //1000 custom offset 
+
+        public Scrolls()
+        {
+            _namesByCode = new Dictionary<short, string>() {
+                //{0xFF, "Brak" }, Duplicate
+                {0+1000, "[Zwój] Przyzwanie okrętu"},
+                {1+1000, "[Zwój] Zniszczenie okrętu"},
+                {2+1000, "[Zwój] Wizja"},
+                {3+1000, "[Zwój] Zasoby ziemi"},
+                {4+1000, "[Zwój] Ukrycie"},
+                {5+1000, "[Zwój] Aura Artefaktów"},
+                {6+1000, "[Zwój] Lot"},
+                {7+1000, "[Zwój] Spacer po wodzie"},
+                {8+1000, "[Zwój] Wrota Wymiarów"},
+                {9+1000, "[Zwój] Miejski portal"},
+                {10+1000, "[Zwój] Ruchome piaski"},
+                {11+1000, "[Zwój] Pole minowe"},
+                {12+1000, "[Zwój] Pole siłowe"},
+                {13+1000, "[Zwój] Ściana ognia"},
+                {14+1000, "[Zwój] Trzęsienie ziemi"},
+                {15+1000, "[Zwój] Magiczna Strzała"},
+                {16+1000, "[Zwój] Lodowy pocisk"},
+                {17+1000, "[Zwój] Błyskawica"},
+                {18+1000, "[Zwój] Implozja"},
+                {19+1000, "[Zwój] Łańcuch Piorunów"},
+                {20+1000, "[Zwój] Krąg zimna"},
+                {21+1000, "[Zwój] Kula ognia"},
+                {22+1000, "[Zwój] Inferno"},
+                {23+1000, "[Zwój] Deszcz meteorów"},
+                {24+1000, "[Zwój] Fala śmierci"},
+                {25+1000, "[Zwój] Zniszczenie nieumarłych"},
+                {26+1000, "[Zwój] Armagedon"},
+                {27+1000, "[Zwój] Tarcza"},
+                {28+1000, "[Zwój] Tarcza Powietrza"},
+                {29+1000, "[Zwój] Tarcza ognia"},
+                {30+1000, "[Zwój] Ochrona przed powietrzem"},
+                {31+1000, "[Zwój] Ochrona przed ogniem"},
+                {32+1000, "[Zwój] Ochrona przed wodą"},
+                {33+1000, "[Zwój] Ochrona przed ziemią"},
+                {34+1000, "[Zwój] Antymagia"},
+                {35+1000, "[Zwój] Rozproszenie"},
+                {36+1000, "[Zwój] Magiczne zwierciadło"},
+                {37+1000, "[Zwój] Uleczenie"},
+                {38+1000, "[Zwój] Wskrzeszenie"},
+                {39+1000, "[Zwój] Ożywienie"},
+                {40+1000, "[Zwój] Ofiara"},
+                {41+1000, "[Zwój] Błogosławieństwo"},
+                {42+1000, "[Zwój] Klątwa"},
+                {43+1000, "[Zwój] Żądza krwi"},
+                {44+1000, "[Zwój] Precyzja"},
+                {45+1000, "[Zwój] Osłabienie"},
+                {46+1000, "[Zwój] Kamienna skóra"},
+                {47+1000, "[Zwój] Promień osłabienia"},
+                {48+1000, "[Zwój] Modlitwa"},
+                {49+1000, "[Zwój] Radość"},
+                {50+1000, "[Zwój] Przygnębienie"},
+                {51+1000, "[Zwój] Fortuna"},
+                {52+1000, "[Zwój] Pech"},
+                {53+1000, "[Zwój] Przyśpieszenie"},
+                {54+1000, "[Zwój] Spowolnienie"},
+                {55+1000, "[Zwój] Pogromca"},
+                {56+1000, "[Zwój] Szał"},
+                {57+1000, "[Zwój] Błyskawica tytana"},
+                {58+1000, "[Zwój] Kontratak"},
+                {59+1000, "[Zwój] Berserk"},
+                {60+1000, "[Zwój] Hipnoza"},
+                {61+1000, "[Zwój] Zapomnienie"},
+                {62+1000, "[Zwój] Oślepienie"},
+                {63+1000, "[Zwój] Teleportacja"},
+                {64+1000, "[Zwój] Usunięcie przeszkody"},
+                {65+1000, "[Zwój] Klonowanie"},
+                {66+1000, "[Zwój] Żywiołak ognia"},
+                {67+1000, "[Zwój] Żywiołak ziemi"},
+                {68+1000, "[Zwój] Żywiołak wody"},
+                {69+1000, "[Zwój] Żywiołak powietrza"}
+            };
+
+            _HOTANamesByCode = new Dictionary<short, string>()
+            {
+
+            };
+        }
+
+    }
+
+
     public class ArtifactInfo
     {
         //  NAME|ATTACK|DEFENSE|SPELL POWER|KNOWLEDGE|MORALE|LUCK|OTHER
         //   0  |   1  |   2   |     3     |    4    |   5  |  6 |  7
-        private static readonly Dictionary<byte, string> _namesByCode = new Dictionary<byte, string>()
+        private static readonly Dictionary<short, string> _namesByCode = new Dictionary<short, string>()
         {
             {0x07, "Centaur's Axe|+2||||||" },
             {0x08, "Blackshard of the Dead Knight|+3||||||" },
@@ -652,16 +778,89 @@ namespace Heroes3Editor.Models
             {161, "Horn of the Abyss|||||||After a stack of living creatures is slain, a stack of Fangarms will rise in their stead and will stay loyal to the hero after the battle concludes" },
             {162, "Charm of Eclipse|||||||Reduces the Power skill of enemy hero by 10% during combat" },
             {163, "Seal of Sunset|||||||Reduces the Power skill of enemy hero by 10% during combat" },
-            {164, "Plate of Dying Light|||||||Reduces the Power skill of enemy hero by 25% during combat" }
+            {164, "Plate of Dying Light|||||||Reduces the Power skill of enemy hero by 25% during combat" },
+        
+            {0x91,"Blokada|||||||Artefakty składane"}, //145
+
+            {0+1000, "[Zwój] Przyzwanie okrętu||||||| Zwój z zaklęciami - Przyzwanie okrętu: ..."},
+            {1+1000, "[Zwój] Zniszczenie okrętu||||||| Zwój z zaklęciami - Zniszczenie okrętu: ..."},
+            {2+1000, "[Zwój] Wizja||||||| Zwój z zaklęciami - Wizja: ..."},
+            {3+1000, "[Zwój] Zasoby ziemi||||||| Zwój z zaklęciami - Zasoby ziemi: ..."},
+            {4+1000, "[Zwój] Ukrycie||||||| Zwój z zaklęciami - Ukrycie: ..."},
+            {5+1000, "[Zwój] Aura Artefaktów||||||| Zwój z zaklęciami - Aura Artefaktów: ..."},
+            {6+1000, "[Zwój] Lot||||||| Zwój z zaklęciami - Lot: ..."},
+            {7+1000, "[Zwój] Spacer po wodzie||||||| Zwój z zaklęciami - Spacer po wodzie: ..."},
+            {8+1000, "[Zwój] Wrota Wymiarów||||||| Zwój z zaklęciami - Wrota Wymiarów: ..."},
+            {9+1000, "[Zwój] Miejski portal||||||| Zwój z zaklęciami - Miejski portal: ..."},
+            {10+1000, "[Zwój] Ruchome piaski||||||| Zwój z zaklęciami - Ruchome piaski: ..."},
+            {11+1000, "[Zwój] Pole minowe||||||| Zwój z zaklęciami - Pole minowe: ..."},
+            {12+1000, "[Zwój] Pole siłowe||||||| Zwój z zaklęciami - Pole siłowe: ..."},
+            {13+1000, "[Zwój] Ściana ognia||||||| Zwój z zaklęciami - Ściana ognia: ..."},
+            {14+1000, "[Zwój] Trzęsienie ziemi||||||| Zwój z zaklęciami - Trzęsienie ziemi: ..."},
+            {15+1000, "[Zwój] Magiczna Strzała||||||| Zwój z zaklęciami - Magiczna Strzała: ..."},
+            {16+1000, "[Zwój] Lodowy pocisk||||||| Zwój z zaklęciami - Lodowy pocisk: ..."},
+            {17+1000, "[Zwój] Błyskawica||||||| Zwój z zaklęciami - Błyskawica: ..."},
+            {18+1000, "[Zwój] Implozja||||||| Zwój z zaklęciami - Implozja: ..."},
+            {19+1000, "[Zwój] Łańcuch Piorunów||||||| Zwój z zaklęciami - Łańcuch Piorunów: ..."},
+            {20+1000, "[Zwój] Krąg zimna||||||| Zwój z zaklęciami - Krąg zimna: ..."},
+            {21+1000, "[Zwój] Kula ognia||||||| Zwój z zaklęciami - Kula ognia: ..."},
+            {22+1000, "[Zwój] Inferno||||||| Zwój z zaklęciami - Inferno: ..."},
+            {23+1000, "[Zwój] Deszcz meteorów||||||| Zwój z zaklęciami - Deszcz meteorów: ..."},
+            {24+1000, "[Zwój] Fala śmierci||||||| Zwój z zaklęciami - Fala śmierci: ..."},
+            {25+1000, "[Zwój] Zniszczenie nieumarłych||||||| Zwój z zaklęciami - Zniszczenie nieumarłych: ..."},
+            {26+1000, "[Zwój] Armagedon||||||| Zwój z zaklęciami - Armagedon: ..."},
+            {27+1000, "[Zwój] Tarcza||||||| Zwój z zaklęciami - Tarcza: ..."},
+            {28+1000, "[Zwój] Tarcza Powietrza||||||| Zwój z zaklęciami - Tarcza Powietrza: ..."},
+            {29+1000, "[Zwój] Tarcza ognia||||||| Zwój z zaklęciami - Tarcza ognia: ..."},
+            {30+1000, "[Zwój] Ochrona przed powietrzem||||||| Zwój z zaklęciami - Ochrona przed powietrzem: ..."},
+            {31+1000, "[Zwój] Ochrona przed ogniem||||||| Zwój z zaklęciami - Ochrona przed ogniem: ..."},
+            {32+1000, "[Zwój] Ochrona przed wodą||||||| Zwój z zaklęciami - Ochrona przed wodą: ..."},
+            {33+1000, "[Zwój] Ochrona przed ziemią||||||| Zwój z zaklęciami - Ochrona przed ziemią: ..."},
+            {34+1000, "[Zwój] Antymagia||||||| Zwój z zaklęciami - Antymagia: ..."},
+            {35+1000, "[Zwój] Rozproszenie||||||| Zwój z zaklęciami - Rozproszenie: ..."},
+            {36+1000, "[Zwój] Magiczne zwierciadło||||||| Zwój z zaklęciami - Magiczne zwierciadło: ..."},
+            {37+1000, "[Zwój] Uleczenie||||||| Zwój z zaklęciami - Uleczenie: ..."},
+            {38+1000, "[Zwój] Wskrzeszenie||||||| Zwój z zaklęciami - Wskrzeszenie: ..."},
+            {39+1000, "[Zwój] Ożywienie||||||| Zwój z zaklęciami - Ożywienie: ..."},
+            {40+1000, "[Zwój] Ofiara||||||| Zwój z zaklęciami - Ofiara: ..."},
+            {41+1000, "[Zwój] Błogosławieństwo||||||| Zwój z zaklęciami - Błogosławieństwo: ..."},
+            {42+1000, "[Zwój] Klątwa||||||| Zwój z zaklęciami - Klątwa: ..."},
+            {43+1000, "[Zwój] Żądza krwi||||||| Zwój z zaklęciami - Żądza krwi: ..."},
+            {44+1000, "[Zwój] Precyzja||||||| Zwój z zaklęciami - Precyzja: ..."},
+            {45+1000, "[Zwój] Osłabienie||||||| Zwój z zaklęciami - Osłabienie: ..."},
+            {46+1000, "[Zwój] Kamienna skóra||||||| Zwój z zaklęciami - Kamienna skóra: ..."},
+            {47+1000, "[Zwój] Promień osłabienia||||||| Zwój z zaklęciami - Promień osłabienia: ..."},
+            {48+1000, "[Zwój] Modlitwa||||||| Zwój z zaklęciami - Modlitwa: ..."},
+            {49+1000, "[Zwój] Radość||||||| Zwój z zaklęciami - Radość: ..."},
+            {50+1000, "[Zwój] Przygnębienie||||||| Zwój z zaklęciami - Przygnębienie: ..."},
+            {51+1000, "[Zwój] Fortuna||||||| Zwój z zaklęciami - Fortuna: ..."},
+            {52+1000, "[Zwój] Pech||||||| Zwój z zaklęciami - Pech: ..."},
+            {53+1000, "[Zwój] Przyśpieszenie||||||| Zwój z zaklęciami - Przyśpieszenie: ..."},
+            {54+1000, "[Zwój] Spowolnienie||||||| Zwój z zaklęciami - Spowolnienie: ..."},
+            {55+1000, "[Zwój] Pogromca||||||| Zwój z zaklęciami - Pogromca: ..."},
+            {56+1000, "[Zwój] Szał||||||| Zwój z zaklęciami - Szał: ..."},
+            {57+1000, "[Zwój] Błyskawica tytana||||||| Zwój z zaklęciami - Błyskawica tytana: ..."},
+            {58+1000, "[Zwój] Kontratak||||||| Zwój z zaklęciami - Kontratak: ..."},
+            {59+1000, "[Zwój] Berserk||||||| Zwój z zaklęciami - Berserk: ..."},
+            {60+1000, "[Zwój] Hipnoza||||||| Zwój z zaklęciami - Hipnoza: ..."},
+            {61+1000, "[Zwój] Zapomnienie||||||| Zwój z zaklęciami - Zapomnienie: ..."},
+            {62+1000, "[Zwój] Oślepienie||||||| Zwój z zaklęciami - Oślepienie: ..."},
+            {63+1000, "[Zwój] Teleportacja||||||| Zwój z zaklęciami - Teleportacja: ..."},
+            {64+1000, "[Zwój] Usunięcie przeszkody||||||| Zwój z zaklęciami - Usunięcie przeszkody: ..."},
+            {65+1000, "[Zwój] Klonowanie||||||| Zwój z zaklęciami - Klonowanie: ..."},
+            {66+1000, "[Zwój] Żywiołak ognia||||||| Zwój z zaklęciami - Żywiołak ognia: ..."},
+            {67+1000, "[Zwój] Żywiołak ziemi||||||| Zwój z zaklęciami - Żywiołak ziemi: ..."},
+            {68+1000, "[Zwój] Żywiołak wody||||||| Zwój z zaklęciami - Żywiołak wody: ..."},
+            {69+1000, "[Zwój] Żywiołak powietrza||||||| Zwój z zaklęciami - Żywiołak powietrza: ..."}
         };
 
-        private static readonly Dictionary<string, byte> _codesByName = _namesByCode.ToDictionary(i => i.Value, i => i.Key);
+        private static readonly Dictionary<string, short> _codesByName = _namesByCode.ToDictionary(i => i.Value, i => i.Key);
 
         public string[] Names { get; } = _namesByCode.Values.ToArray();
 
-        public string this[byte key] => _namesByCode[key];
+        public string this[short key] => _namesByCode[key];
 
-        public byte this[string key] => _codesByName[key];
+        public short this[string key] => _codesByName[key];
     }
 
     public class Spells
@@ -751,7 +950,7 @@ namespace Heroes3Editor.Models
     {
         public Creatures()
         {
-            _namesByCode = new Dictionary<byte, string>() {
+            _namesByCode = new Dictionary<short, string>() {
                 {0x00, "Pikeman"},
                 {0x01, "Halberdier"},
                 {0x02, "Archer"},
@@ -894,7 +1093,7 @@ namespace Heroes3Editor.Models
                 {0x8F, "Rogue"},
                 {0x90, "Troll"},
             };
-            _HOTANamesByCode = new Dictionary<byte, string>() {
+            _HOTANamesByCode = new Dictionary<short, string>() {
                 {153, "Nymph"},
                 {154, "Oceanids"},
                 {155, "Crew Mates"},

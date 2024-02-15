@@ -893,10 +893,10 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </summary>
 		public override void Flush()
 		{
-			if(curMethod == CompressionMethod.Stored)
+			if (curMethod == CompressionMethod.Stored)
 			{
 				baseOutputStream_.Flush();
-			} 
+			}
 			else
 			{
 				base.Flush();

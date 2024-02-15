@@ -5,25 +5,25 @@ namespace Heroes3Editor.Models
 {
     public class BaseArtifact
     {
-        internal Dictionary<byte, string> _namesByCode { get; set; }
+        internal Dictionary<short, string> _namesByCode { get; set; }
 
-        internal Dictionary<byte, string> _HOTANamesByCode { get; set; }
+        internal Dictionary<short, string> _HOTANamesByCode { get; set; }
 
-        internal Dictionary<string, byte> _codesByName => _namesByCode?.ToDictionary(i => i.Value, i => i.Key);
+        internal Dictionary<string, short> _codesByName => _namesByCode?.ToDictionary(i => i.Value, i => i.Key);
 
-        public Dictionary<byte, string> GetArtifacts => _namesByCode.Where(x => x.Value != "Brak").ToDictionary(x => x.Key, x => x.Value);
+        public Dictionary<short, string> GetArtifacts => _namesByCode.Where(x => x.Value != "Brak").ToDictionary(x => x.Key, x => x.Value);
 
         public BaseArtifact()
         {
-            _namesByCode = new Dictionary<byte, string>();
-            _HOTANamesByCode = new Dictionary<byte, string>();
+            _namesByCode = new Dictionary<short, string>();
+            _HOTANamesByCode = new Dictionary<short, string>();
         }
 
         public string[] Names => _namesByCode?.Values.ToArray();
 
-        public string this[byte key] => _namesByCode[key];
+        public string this[short key] => _namesByCode[key];
 
-        public byte this[string key] => _codesByName[key];
+        public short this[string key] => _codesByName[key];
 
         public void LoadHotaReferenceCodes()
         {

@@ -1070,7 +1070,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 				bool testData = (tests & HeaderTest.Extract) != 0;
 
 				var entryAbsOffset = offsetOfFirstEntry + entry.Offset;
-				
+
 				baseStream_.Seek(entryAbsOffset, SeekOrigin.Begin);
 				var signature = (int)ReadLEUint();
 

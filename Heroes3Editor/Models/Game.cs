@@ -2,8 +2,10 @@
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 using ICSharpCode.SharpZipLib.GZip;
 
 namespace Heroes3Editor.Models
@@ -144,6 +146,11 @@ namespace Heroes3Editor.Models
         public int[] CreatureAmounts { get; } = new int[7];
 
         public ISet<string> WarMachines { get; } = new HashSet<string>();
+
+        public bool SpellBookState;
+
+        public bool CatapultState;
+
         public string[] ArtifactInfo { get; } = new string[1];
 
         public IDictionary<string, string> EquippedArtifacts = new Dictionary<string, string>()
@@ -266,12 +273,25 @@ namespace Heroes3Editor.Models
                     WarMachines.Add(warMachine);
             }
 
+            SpellBookState = _game.Bytes[BytePosition + Constants.HeroOffsets["SpellBook_Slot"]] == Constants.CustomArtifacts["Spell Book"];
+
+            CatapultState = _game.Bytes[BytePosition + Constants.HeroOffsets["Catapult_Slot"]] == Constants.CustomArtifacts["Catapult"];
+
+
             var gears = new List<string>(EquippedArtifacts.Keys);
             foreach (var gear in gears)
             {
                 var code = _game.Bytes[BytePosition + Constants.HeroOffsets[gear]];
-                if (code != OFF)
+
+                if (code != OFF && code != 1) //skip scroll
                     EquippedArtifacts[gear] = Constants.Artifacts[code];
+
+                if (code == 1 && (gear.Contains("Item") || gear.Contains("Inventory"))) // Item 1-5, Inventory 1-64
+                {
+                    var codeTypeScroll = _game.Bytes[BytePosition + Constants.HeroOffsets[gear] + 4] + 1000;
+
+                    EquippedArtifacts[gear] = Constants.Artifacts[(short)codeTypeScroll]; //with scrolls
+                }
             }
         }
 
@@ -418,6 +438,49 @@ namespace Heroes3Editor.Models
             _game.Bytes[spellBookPosition] = 0;
         }
 
+        public void AddSpellBook()
+        {
+
+            int position = BytePosition + Constants.HeroOffsets["SpellBook_Slot"];
+            _game.Bytes[position] = (byte)Constants.CustomArtifacts["Spell Book"]; //= ON
+            _game.Bytes[position + 1] = ON;
+            _game.Bytes[position + 2] = ON;
+            _game.Bytes[position + 3] = ON;
+
+        }
+
+        public void RemoveSpellBook()
+        {
+
+            int currentBytePos = BytePosition + Constants.HeroOffsets["SpellBook_Slot"];
+            _game.Bytes[currentBytePos] = OFF;
+            _game.Bytes[currentBytePos + 1] = OFF;
+            _game.Bytes[currentBytePos + 2] = OFF;
+            _game.Bytes[currentBytePos + 3] = OFF;
+        }
+
+        public void AddCatapult()
+        {
+
+            int position = BytePosition + Constants.HeroOffsets["Catapult_Slot"];
+            _game.Bytes[position] = (byte)Constants.CustomArtifacts["Catapult"];
+            _game.Bytes[position + 1] = ON;
+            _game.Bytes[position + 2] = ON;
+            _game.Bytes[position + 3] = ON;
+
+        }
+
+        public void RemoveCatapult()
+        {
+
+            int currentBytePos = BytePosition + Constants.HeroOffsets["Catapult_Slot"];
+            _game.Bytes[currentBytePos] = OFF;
+            _game.Bytes[currentBytePos + 1] = OFF;
+            _game.Bytes[currentBytePos + 2] = OFF;
+            _game.Bytes[currentBytePos + 3] = OFF;
+        }
+
+
         public void UpdateCreature(int i, string creature)
         {
             if (Creatures[i] == null)
@@ -427,7 +490,7 @@ namespace Heroes3Editor.Models
             }
 
             Creatures[i] = creature;
-            _game.Bytes[BytePosition + Constants.HeroOffsets["Creatures"] + i * 4] = Constants.Creatures[creature];
+            _game.Bytes[BytePosition + Constants.HeroOffsets["Creatures"] + i * 4] = (byte)Constants.Creatures[creature];
             _game.Bytes[BytePosition + Constants.HeroOffsets["Creatures"] + (i * 4) + 1] = ON;
             _game.Bytes[BytePosition + Constants.HeroOffsets["Creatures"] + (i * 4) + 2] = ON;
             _game.Bytes[BytePosition + Constants.HeroOffsets["Creatures"] + (i * 4) + 3] = ON;
@@ -444,7 +507,7 @@ namespace Heroes3Editor.Models
             if (!WarMachines.Add(warMachine)) return;
 
             int position = BytePosition + Constants.HeroOffsets[warMachine];
-            _game.Bytes[position] = Constants.WarMachines[warMachine];
+            _game.Bytes[position] = (byte)Constants.WarMachines[warMachine];
             _game.Bytes[position + 1] = ON;
             _game.Bytes[position + 2] = ON;
             _game.Bytes[position + 3] = ON;
@@ -464,13 +527,37 @@ namespace Heroes3Editor.Models
         public void UpdateEquippedArtifact(string gear, string artifact)
         {
             int currentBytePos = BytePosition + Constants.HeroOffsets[gear];
+
             if (!artifact.Contains("Brak"))
             {
                 EquippedArtifacts[gear] = artifact;
-                _game.Bytes[currentBytePos] = Constants.Artifacts[artifact];
+
+                byte[] bytes;
+
+                if (!Constants.Scrolls.Names.Contains(artifact))
+                {
+                    bytes = BitConverter.GetBytes(Constants.Artifacts[artifact]);
+                    
+                    _game.Bytes[currentBytePos] = bytes[0];
+                }
+                else
+                {
+                    bytes = BitConverter.GetBytes(Constants.Artifacts[artifact] - 1000);
+
+                    _game.Bytes[currentBytePos] = (byte)Constants.CustomArtifacts["Spell Scroll"];
+                    //1,2,3
+                    _game.Bytes[currentBytePos + 4] = bytes[0];
+                    _game.Bytes[currentBytePos + 5] = ON;
+                    _game.Bytes[currentBytePos + 6] = ON;
+                    _game.Bytes[currentBytePos + 7] = ON;
+                }
+
                 _game.Bytes[currentBytePos + 1] = ON;
                 _game.Bytes[currentBytePos + 2] = ON;
                 _game.Bytes[currentBytePos + 3] = ON;
+
+
+
             }
             else
             {
@@ -480,7 +567,9 @@ namespace Heroes3Editor.Models
                 _game.Bytes[currentBytePos + 2] = OFF;
                 _game.Bytes[currentBytePos + 3] = OFF;
             }
+
         }
+
 
         //  NAME|ATTACK|DEFENSE|POWER|KNOWLEDGE|MORALE|LUCK|OTHER
         //   0  |   1  |   2   |  3  |    4    |   5  |  6 |  7

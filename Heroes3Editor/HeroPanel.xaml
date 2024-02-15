@@ -51,7 +51,7 @@
                         <Label Content="Podziemia"/>
                         <TextBox x:Name="CoordinatesZ" TextChanged="UpdateCoordinatesZ"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3">
+                    <StackPanel ToolTip="Podczas zmiany ustaw prawidłowe doświadczenie" Orientation="Horizontal" Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="3">
                         <Label Content="Poziom"/>
                         <TextBox x:Name="HeroLevel" IsEnabled="True" TextChanged="UpdateHeroLevel"/>
                     </StackPanel>
@@ -130,7 +130,7 @@
                         <Label Content="Punkty many"/>
                         <TextBox x:Name="ManaPoints" TextChanged="UpdateManaPoints"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                    <StackPanel ToolTip="Podczas zmiany ustaw prawidłowy poziom" Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
                         <Label Content="Doświadczenie"/>
                         <TextBox x:Name="Experience" IsEnabled="True" TextChanged="UpdateExperience"/>
                     </StackPanel>
@@ -516,10 +516,10 @@
                     <CheckBox x:Name="Ballista" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ballista">
                         <Label Content="Balista"/>
                     </CheckBox>
-                    <RadioButton GroupName="Artillery" x:Name="BallistaRadio" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ballista" Visibility="Hidden">
+                    <RadioButton GroupName="Artillery" x:Name="BallistaRadio" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ballista" Visibility="Hidden" VerticalContentAlignment="Center">
                         <Label Content="Ballista"/>
                     </RadioButton>
-                    <RadioButton GroupName="Artillery" x:Name="Canon" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Canon" Visibility="Hidden">
+                    <RadioButton GroupName="Artillery" x:Name="Canon" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Canon" Visibility="Hidden" VerticalContentAlignment="Center">
                         <Label Content="Armata"/>
                     </RadioButton>
                     <CheckBox x:Name="Ammo_Cart" Margin="25,0" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ammo_Cart">
@@ -529,6 +529,29 @@
                         <Label Content="Namiot medyka"/>
                     </CheckBox>
                 </WrapPanel>
+            </GroupBox>
+            <GroupBox Header="Niestandardowe wyposażenie">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                        <CheckBox x:Name="SpellBook" Checked="AddSpellBook" Unchecked="RemoveSpellBook">
+                            <Label Content="Księga zaklęć"/>
+                        </CheckBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                    <CheckBox x:Name="Catapult" Checked="AddCatapult" Unchecked="RemoveCatapult">
+                        <Label Content="Katapulta"/>
+                    </CheckBox>
+                    </StackPanel>
+                </Grid>
             </GroupBox>
             <GroupBox Header="Wyposażenie">
                 <Grid HorizontalAlignment="Stretch">
