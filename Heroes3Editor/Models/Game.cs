@@ -168,11 +168,77 @@ namespace Heroes3Editor.Models
             {"Item2", ""},
             {"Item3", ""},
             {"Item4", ""},
-            {"Item5", ""}
+            {"Item5", ""},
+            {"Inventory1", ""},
+            {"Inventory2", ""},
+            {"Inventory3", ""},
+            {"Inventory4", ""},
+            {"Inventory5", ""},
+            {"Inventory6", ""},
+            {"Inventory7", ""},
+            {"Inventory8", ""},
+            {"Inventory9", ""},
+            {"Inventory10", ""},
+            {"Inventory11", ""},
+            {"Inventory12", ""},
+            {"Inventory13", ""},
+            {"Inventory14", ""},
+            {"Inventory15", ""},
+            {"Inventory16", ""},
+            {"Inventory17", ""},
+            {"Inventory18", ""},
+            {"Inventory19", ""},
+            {"Inventory20", ""},
+            {"Inventory21", ""},
+            {"Inventory22", ""},
+            {"Inventory23", ""},
+            {"Inventory24", ""},
+            {"Inventory25", ""},
+            {"Inventory26", ""},
+            {"Inventory27", ""},
+            {"Inventory28", ""},
+            {"Inventory29", ""},
+            {"Inventory30", ""},
+            {"Inventory31", ""},
+            {"Inventory32", ""},
+            {"Inventory33", ""},
+            {"Inventory34", ""},
+            {"Inventory35", ""},
+            {"Inventory36", ""},
+            {"Inventory37", ""},
+            {"Inventory38", ""},
+            {"Inventory39", ""},
+            {"Inventory40", ""},
+            {"Inventory41", ""},
+            {"Inventory42", ""},
+            {"Inventory43", ""},
+            {"Inventory44", ""},
+            {"Inventory45", ""},
+            {"Inventory46", ""},
+            {"Inventory47", ""},
+            {"Inventory48", ""},
+            {"Inventory49", ""},
+            {"Inventory50", ""},
+            {"Inventory51", ""},
+            {"Inventory52", ""},
+            {"Inventory53", ""},
+            {"Inventory54", ""},
+            {"Inventory55", ""},
+            {"Inventory56", ""},
+            {"Inventory57", ""},
+            {"Inventory58", ""},
+            {"Inventory59", ""},
+            {"Inventory60", ""},
+            {"Inventory61", ""},
+            {"Inventory62", ""},
+            {"Inventory63", ""},
+            {"Inventory64", ""},
+
         };
 
         private const int ON = 0;
         private const int OFF = 255;
+
 
         public Hero(string name, Game game, int bytePosition)
         {
@@ -281,7 +347,15 @@ namespace Heroes3Editor.Models
             var gears = new List<string>(EquippedArtifacts.Keys);
             foreach (var gear in gears)
             {
-                var code = _game.Bytes[BytePosition + Constants.HeroOffsets[gear]];
+                short code;
+
+                if (gear.Contains("Inventory"))
+                {
+                    int slot = int.Parse(gear.Substring("Inventory".Length)); //number for Inventory
+                    code = _game.Bytes[BytePosition + Constants.HeroOffsets["Inventory"] + (slot - 1) * 8];
+                }
+                else
+                    code = _game.Bytes[BytePosition + Constants.HeroOffsets[gear]];
 
                 if (code != OFF && code != 1) //skip scroll
                     EquippedArtifacts[gear] = Constants.Artifacts[code];
@@ -523,6 +597,53 @@ namespace Heroes3Editor.Models
             _game.Bytes[currentBytePos + 2] = OFF;
             _game.Bytes[currentBytePos + 3] = OFF;
         }
+
+        public void UpdateInventory(string gear, int slot, string artifact)
+        {
+            int currentBytePos = BytePosition + Constants.HeroOffsets["Inventory"] + (slot - 1) * 8;
+
+            if (!artifact.Contains("Brak"))
+            {
+                EquippedArtifacts[gear] = artifact;
+
+                byte[] bytes;
+
+                if (!Constants.Scrolls.Names.Contains(artifact))
+                {
+                    bytes = BitConverter.GetBytes(Constants.Artifacts[artifact]);
+
+                    _game.Bytes[currentBytePos] = bytes[0];
+                }
+                else
+                {
+                    bytes = BitConverter.GetBytes(Constants.Artifacts[artifact] - 1000);
+
+                    _game.Bytes[currentBytePos] = (byte)Constants.CustomArtifacts["Spell Scroll"];
+                    //1,2,3
+                    _game.Bytes[currentBytePos + 4] = bytes[0];
+                    _game.Bytes[currentBytePos + 5] = ON;
+                    _game.Bytes[currentBytePos + 6] = ON;
+                    _game.Bytes[currentBytePos + 7] = ON;
+                }
+
+                _game.Bytes[currentBytePos + 1] = ON;
+                _game.Bytes[currentBytePos + 2] = ON;
+                _game.Bytes[currentBytePos + 3] = ON;
+
+
+
+            }
+            else
+            {
+                EquippedArtifacts[gear] = "";
+                _game.Bytes[currentBytePos] = OFF;
+                _game.Bytes[currentBytePos + 1] = OFF;
+                _game.Bytes[currentBytePos + 2] = OFF;
+                _game.Bytes[currentBytePos + 3] = OFF;
+            }
+
+        }
+
 
         public void UpdateEquippedArtifact(string gear, string artifact)
         {

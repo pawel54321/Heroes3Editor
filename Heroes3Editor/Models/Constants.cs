@@ -27,7 +27,7 @@ namespace Heroes3Editor.Models
         public static ArtifactInfo ArtifactInfo { get; } = new ArtifactInfo();
 
         private static readonly string[] _heroes = {
-            "Christian", "Edric", "Orrin", "Sylvia", "Valeska", "Sorsha", "Tyris", "Lord Haart", "Catherine",
+            "Christian", "Edric", "Orrin", "Sylvia", "Valeska", "Sorsha", "Tyris", "Lord Haart", "Catherine", "Katarzyna",
             "Roland", "Sir Mullich", "Adela", "Adelaide", "Caitlin", "Cuthbert", "Ingham", "Loynis", "Rion",
             "Sanya", "Jenova", "Kyrre", "Ivor", "Ufretin", "Clancy", "Thorgrim", "Ryland", "Mephala", "Gelu",
             "Aeris", "Alagar", "Coronius", "Elleshar", "Malcom", "Melodia", "Gem", "Uland", "Fafner", "Iona",
@@ -132,7 +132,7 @@ namespace Heroes3Editor.Models
 
         public static void LoadAllArtifacts()
         {
-            Artifacts.AddArtifacts(WarMachines.GetArtifacts);
+            //Artifacts.AddArtifacts(WarMachines.GetArtifacts);
             Artifacts.AddArtifacts(Weapons.GetArtifacts);
             Artifacts.AddArtifacts(Shields.GetArtifacts);
             Artifacts.AddArtifacts(Armor.GetArtifacts);
@@ -199,7 +199,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<short, string>()
             {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x07, "Centaur's Axe" },
                 {0x08, "Blackshard of the Dead Knight" },
@@ -225,7 +225,7 @@ namespace Heroes3Editor.Models
         public Shields()
         {
             _namesByCode = new Dictionary<short, string>() {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x0D, "Shield of the Dwarven Lords" },
                 {0x0E, "Shield of the Yawning Dead" },
@@ -248,7 +248,7 @@ namespace Heroes3Editor.Models
         public Helms()
         {
             _namesByCode = new Dictionary<short, string>() {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x13, "Helm of the Alabaster Unicorn" },
                 {0x14, "Skull Helmet" },
@@ -300,7 +300,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<short, string>()
             {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x2A, "Dragon Wing Tabard" },
                 {0x37, "Vampire's Cowl" },
@@ -326,7 +326,7 @@ namespace Heroes3Editor.Models
 
             _namesByCode = new Dictionary<short, string>()
             {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x20, "Sandal's of the Saint" },
                 {0x29, "Dragonbone Greaves" },
@@ -347,7 +347,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<short, string>() {
 
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x21, "Celestial Necklace of Bliss" },
                 {0x2B, "Necklace of Dragonteeth" },
@@ -379,7 +379,7 @@ namespace Heroes3Editor.Models
         {
             _namesByCode = new Dictionary<short, string>()
             {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x25, "Quiet Eye of the Dragon" },
                 {0x2D, "Still Eye of the Dragon" },
@@ -406,7 +406,7 @@ namespace Heroes3Editor.Models
         public Items() //1-5
         {
             _namesByCode = new Dictionary<short, string>() {
-                {0x91, "Blokada" },
+                {0x91, "Zablokowane" },
                 {0xFF, "Brak" },
                 {0x2E, "Clover of Fortune" },
                 {0x2F, "Cards of Prophecy" },
@@ -497,7 +497,7 @@ namespace Heroes3Editor.Models
         }
     }
 
-    public class CustomArtifacts : BaseArtifact //CustomInventory (Sakwa)
+    public class CustomArtifacts : BaseArtifact //CustomInventory - Slots Hero
     {
         public CustomArtifacts()
         {
@@ -510,19 +510,19 @@ namespace Heroes3Editor.Models
 
     }
 
-    public class Artifacts : BaseArtifact //Inventory (Sakwa)
+    public class Artifacts : BaseArtifact //Inventory - Sakwa
     {
         public Artifacts()
         {
             _namesByCode = new Dictionary<short, string>() {
-                {0x02, "The Grail" }, //TODO: Only in long slot
+                {0x02, "Graal" },
             };
         }
         public void AddArtifacts(Dictionary<short, string> artifacts)
         {
             foreach (var element in artifacts)
             {
-                if (_namesByCode.ContainsKey(element.Key))
+                if (_namesByCode.ContainsKey(element.Key) || element.Value.Equals("Zablokowane"))
                 {
                     continue;
                 }
@@ -780,7 +780,8 @@ namespace Heroes3Editor.Models
             {163, "Seal of Sunset|||||||Reduces the Power skill of enemy hero by 10% during combat" },
             {164, "Plate of Dying Light|||||||Reduces the Power skill of enemy hero by 25% during combat" },
         
-            {0x91,"Blokada|||||||Artefakty składane"}, //145
+            {0x91,"Zablokowane|||||||Artefakty składane"}, //145
+            {0x02,"Graal|||||||Graal - "},
 
             {0+1000, "[Zwój] Przyzwanie okrętu||||||| Zwój z zaklęciami - Przyzwanie okrętu: ..."},
             {1+1000, "[Zwój] Zniszczenie okrętu||||||| Zwój z zaklęciami - Zniszczenie okrętu: ..."},

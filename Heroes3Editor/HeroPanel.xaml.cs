@@ -400,11 +400,23 @@ namespace Heroes3Editor
             _hero.RemoveWarMachine(component.Tag.ToString());
         }
 
+        private void UpdateInventory(object sender, RoutedEventArgs e)
+        {
+            var cboBox = e.Source as ComboBox;
+            var gear = cboBox.Name.Substring("EA_".Length);
+            int slot = int.Parse(cboBox.Name.Substring("EA_Inventory".Length)); //number for Inventory
+            var artifact = cboBox.SelectedItem as string;
+
+            _hero.UpdateInventory(gear, slot, artifact);
+
+        }
+
         private void UpdateEquippedArtifact(object sender, RoutedEventArgs e)
         {
             var cboBox = e.Source as ComboBox;
             var gear = cboBox.Name.Substring("EA_".Length);
             var artifact = cboBox.SelectedItem as string;
+
 
             _hero.UpdateEquippedArtifact(gear, artifact);
         }
