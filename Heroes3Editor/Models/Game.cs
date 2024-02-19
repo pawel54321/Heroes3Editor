@@ -239,7 +239,6 @@ namespace Heroes3Editor.Models
         private const int ON = 0;
         private const int OFF = 255;
 
-
         public Hero(string name, Game game, int bytePosition)
         {
             Name = name;
@@ -347,24 +346,30 @@ namespace Heroes3Editor.Models
             var gears = new List<string>(EquippedArtifacts.Keys);
             foreach (var gear in gears)
             {
-                short code;
+                short code; //which artifact in slot
+                int slot = -1;
 
                 if (gear.Contains("Inventory"))
                 {
-                    int slot = int.Parse(gear.Substring("Inventory".Length)); //number for Inventory
+                    slot = int.Parse(gear.Substring("Inventory".Length)); //number of slot for Inventory
                     code = _game.Bytes[BytePosition + Constants.HeroOffsets["Inventory"] + (slot - 1) * 8];
                 }
                 else
                     code = _game.Bytes[BytePosition + Constants.HeroOffsets[gear]];
 
-                if (code != OFF && code != 1) //skip scroll
+                if (code != OFF && code != 1) //without scrolls (skip)
                     EquippedArtifacts[gear] = Constants.Artifacts[code];
 
-                if (code == 1 && (gear.Contains("Item") || gear.Contains("Inventory"))) // Item 1-5, Inventory 1-64
+                if (code == 1 && (gear.Contains("Item") || gear.Contains("Inventory"))) // Item 1-5, Inventory 1-64 - with scrolls
                 {
-                    var codeTypeScroll = _game.Bytes[BytePosition + Constants.HeroOffsets[gear] + 4] + 1000;
+                    int codeTypeScroll;
 
-                    EquippedArtifacts[gear] = Constants.Artifacts[(short)codeTypeScroll]; //with scrolls
+                    if (gear.Contains("Inventory") && slot != -1) //Inventory - with scrolls
+                        codeTypeScroll = _game.Bytes[BytePosition + Constants.HeroOffsets["Inventory"] + (slot - 1) * 8 + 4] + 1000;
+                    else //Item - with scrolls
+                        codeTypeScroll = _game.Bytes[BytePosition + Constants.HeroOffsets[gear] + 4] + 1000;
+
+                    EquippedArtifacts[gear] = Constants.Artifacts[(short)codeTypeScroll]; 
                 }
             }
         }
@@ -613,6 +618,7 @@ namespace Heroes3Editor.Models
                     bytes = BitConverter.GetBytes(Constants.Artifacts[artifact]);
 
                     _game.Bytes[currentBytePos] = bytes[0];
+
                 }
                 else
                 {
@@ -657,9 +663,13 @@ namespace Heroes3Editor.Models
 
                 if (!Constants.Scrolls.Names.Contains(artifact))
                 {
-                    bytes = BitConverter.GetBytes(Constants.Artifacts[artifact]);
+                    if(artifact.Equals("Zablokowane"))
+                        bytes = BitConverter.GetBytes(Constants.Items[artifact]); //Get locked (without Inventory)
+                    else
+                        bytes = BitConverter.GetBytes(Constants.Artifacts[artifact]);
                     
                     _game.Bytes[currentBytePos] = bytes[0];
+
                 }
                 else
                 {
@@ -678,7 +688,6 @@ namespace Heroes3Editor.Models
                 _game.Bytes[currentBytePos + 3] = ON;
 
 
-
             }
             else
             {
@@ -690,6 +699,7 @@ namespace Heroes3Editor.Models
             }
 
         }
+
 
 
         //  NAME|ATTACK|DEFENSE|POWER|KNOWLEDGE|MORALE|LUCK|OTHER
